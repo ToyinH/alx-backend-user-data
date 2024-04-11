@@ -7,6 +7,7 @@ Regex-ing
 import re
 from typing import List
 import logging
+import csv
 # from filtered_logger import filter_datum
 
 
@@ -35,6 +36,22 @@ class RedactingFormatter(logging.Formatter):
         return super().format(record)
 
 
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+
+def get_logger() -> logging.Logger:
+    """
+    Returns a logging.Logger object named "user_data" that logs up to logging.INFO level.
+    """
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    formatter = RedactingFormatter(PII_FIELDS)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+    logger.propagate = False
+    return logger
+
+    
 def filter_datum(fields: List[str], redaction: str, message: str, separator: str) -> str:
     """
     Obfuscates specified fields in a log message.

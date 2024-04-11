@@ -8,6 +8,9 @@ import re
 from typing import List
 import logging
 import csv
+import os
+import mysql.connector
+from mysql.connector import Error
 # from filtered_logger import filter_datum
 
 
@@ -51,7 +54,35 @@ def get_logger() -> logging.Logger:
     logger.propagate = False
     return logger
 
-    
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """
+    Returns a connector to the MySQL database.
+
+    The database credentials are obtained from environment variables:
+    - PERSONAL_DATA_DB_USERNAME: username for the database (default: "root")
+    - PERSONAL_DATA_DB_PASSWORD: password for the database (default: "")
+    - PERSONAL_DATA_DB_HOST: host for the database (default: "localhost")
+    - PERSONAL_DATA_DB_NAME: name of the database
+    """
+    username = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
+    host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
+    db_name = os.getenv("PERSONAL_DATA_DB_NAME")
+
+    try:
+        conn = mysql.connector.connect(
+            user=username,
+            password=password,
+            host=host,
+            database=db_name
+        )
+        return conn
+    except Error as e:
+        print(f"Error connecting to database: {e}")
+        raise
+
+
 def filter_datum(fields: List[str], redaction: str, message: str, separator: str) -> str:
     """
     Obfuscates specified fields in a log message.

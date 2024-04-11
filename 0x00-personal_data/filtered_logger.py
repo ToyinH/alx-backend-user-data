@@ -12,6 +12,9 @@ import os
 import mysql.connector
 from mysql.connector import Error
 # from filtered_logger import filter_datum
+# from filtered_logger import filter_datum, RedactingFormatter, get_db
+from filtered_logger import get_db
+
 
 
 class RedactingFormatter(logging.Formatter):
@@ -103,3 +106,27 @@ def filter_datum(fields: List[str], redaction: str, message: str, separator: str
         flags=re.IGNORECASE
     )
 
+def main() -> None:
+    """
+    Retrieves all rows in the users table from the database and displays each row under a filtered format.
+    """
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    formatter = RedactingFormatter(PII_FIELDS)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+    logger.propagate = False
+
+    try:
+        conn = get_db()
+        if conn.is_connected():
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM users")
+            rows = cursor.fetchall()
+            for row in rows:
+                message = "; ".join([f"{key}={value}" for key, value in row.items()])
+                logger.info(message)
+            cursor.close()
+    except Error as e:
+        logger.error(f"Error: {e}")

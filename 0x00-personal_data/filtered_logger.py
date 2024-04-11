@@ -13,13 +13,14 @@ import mysql.connector
 from mysql.connector import Error
 # from filtered_logger import filter_datum
 # from filtered_logger import filter_datum, RedactingFormatter, get_db
-from filtered_logger import get_db
+#from filtered_logger import get_db
 
 
 
 class RedactingFormatter(logging.Formatter):
-    """ Redacting Formatter class
-        """
+    """ 
+    Redacting Formatter class
+    """
 
     REDACTION = "***"
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"

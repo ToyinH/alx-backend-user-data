@@ -1,6 +1,3 @@
-cat api/v1/app.py 
-
-
 #!/usr/bin/env python3
 """
 Route module for the API

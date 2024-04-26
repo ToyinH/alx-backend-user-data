@@ -8,6 +8,7 @@ EMAIL = "guillaume@holberton.io"
 PASSWD = "b4l0u"
 NEW_PASSWD = "t4rt1fl3tt3"
 
+
 def register_user(email: str, password: str) -> None:
     """
     Function to register a user via the corresponding endpoint.
@@ -19,6 +20,7 @@ def register_user(email: str, password: str) -> None:
     response = requests.post("http://localhost:5000/users", data={"email": email, "password": password})
     assert response.status_code == 200, f"Registration failed: {response.json()}"
 
+
 def log_in_wrong_password(email: str, password: str) -> None:
     """
     Function to attempt login with the wrong password via the corresponding endpoint.
@@ -29,6 +31,7 @@ def log_in_wrong_password(email: str, password: str) -> None:
     """
     response = requests.post("http://localhost:5000/login", data={"email": email, "password": password})
     assert response.status_code == 401, f"Login with wrong password should fail: {response.json()}"
+
 
 def log_in(email: str, password: str) -> str:
     """
@@ -45,12 +48,14 @@ def log_in(email: str, password: str) -> str:
     assert response.status_code == 200, f"Login failed: {response.json()}"
     return response.json()["session_id"]
 
+
 def profile_unlogged() -> None:
     """
     Function to check the profile of an unlogged user via the corresponding endpoint.
     """
     response = requests.get("http://localhost:5000/profile")
     assert response.status_code == 401, f"Accessing profile should be unauthorized: {response.json()}"
+
 
 def profile_logged(session_id: str) -> None:
     """
@@ -62,6 +67,7 @@ def profile_logged(session_id: str) -> None:
     response = requests.get("http://localhost:5000/profile", headers={"session_id": session_id})
     assert response.status_code == 200, f"Failed to access profile: {response.json()}"
 
+
 def log_out(session_id: str) -> None:
     """
     Function to log out a user via the corresponding endpoint.
@@ -71,6 +77,7 @@ def log_out(session_id: str) -> None:
     """
     response = requests.post("http://localhost:5000/logout", headers={"session_id": session_id})
     assert response.status_code == 200, f"Logout failed: {response.json()}"
+
 
 def reset_password_token(email: str) -> str:
     """
@@ -86,6 +93,7 @@ def reset_password_token(email: str) -> str:
     assert response.status_code == 200, f"Failed to get reset token: {response.json()}"
     return response.json()["reset_token"]
 
+
 def update_password(email: str, reset_token: str, new_password: str) -> None:
     """
     Function to update user password via the corresponding endpoint.
@@ -97,6 +105,7 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
     """
     response = requests.post("http://localhost:5000/update_password", data={"email": email, "reset_token": reset_token, "new_password": new_password})
     assert response.status_code == 200, f"Failed to update password: {response.json()}"
+
 
 if __name__ == "__main__":
     register_user(EMAIL, PASSWD)

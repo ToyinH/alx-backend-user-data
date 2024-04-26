@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """DB module
 """
@@ -57,7 +56,6 @@ class DB:
             raise NoResultFound
         return row
 
-    
     def update_user(self, user_id: int, **kwargs) -> None:
         """Implement the update_user method, which has two required arguments:
         user_id and kwargs, a dictionary.
